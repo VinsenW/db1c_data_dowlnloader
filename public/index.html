@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DB1C Explorer</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="eyebrow">BTS ORIGIN & DESTINATION SURVEY · OD40</div>
+    <h1>DB1C Explorer</h1>
+    <p>Explore public airline ticket and directional market records, then export the exact slice you need.</p>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <section class="panel">
+        <div class="step">01 <span>DATA SOURCE</span></div>
+        <div class="segment" role="group" aria-label="DB1C product">
+          <button class="selected" data-product="market" type="button">Market</button>
+          <button data-product="ticket" type="button">Ticket</button>
+        </div>
+        <p class="help" id="productHelp">Directional origin, destination, passengers, and market amount.</p>
+        <div class="two">
+          <label>From <select id="from"></select></label>
+          <label>Through <select id="through"></select></label>
+        </div>
+        <button class="primary full" id="download" type="button">Download / open months</button>
+        <div class="download-status" id="downloadStatus" role="status">Choose a range to begin.</div>
+        <p class="help">Monthly ZIPs can exceed 1 GB. The Parquet files remain on your computer.</p>
+      </section>
+
+      <section class="panel">
+        <div class="step">02 <span>FILTER & SELECT</span></div>
+        <label>Origin airports <input id="origin" placeholder="CMH, LCK" spellcheck="false"></label>
+        <label id="destWrap">Destination airports <input id="dest" placeholder="LAX, SFO" spellcheck="false"></label>
+        <div class="label">Purchase window</div>
+        <div class="check-row" id="windows">
+          <label><input type="checkbox" value="21AP"> ≤21 days</label>
+          <label><input type="checkbox" value="2290"> 22–90</label>
+          <label><input type="checkbox" value="91UP"> ≥91</label>
+        </div>
+        <div class="two">
+          <label>Min amount <input id="minAmount" type="number" min="0" step="any" placeholder="Any"></label>
+          <label>Max amount <input id="maxAmount" type="number" min="0" step="any" placeholder="Any"></label>
+        </div>
+        <div class="field-heading"><span>Fields to export</span><button id="allFields" type="button">Select all</button></div>
+        <div id="fields" class="fields"><span class="muted">Open a month to see its fields.</span></div>
+        <button class="primary full" id="runQuery" type="button" disabled>Run query</button>
+      </section>
+    </aside>
+
+    <main class="workspace">
+      <div class="workspace-head">
+        <div><span class="eyebrow dark">WORKSPACE</span><h2 id="viewTitle">Directional Market</h2></div>
+        <span class="pill" id="cachePill">No data open</span>
+      </div>
+      <div class="alert" id="alert" hidden></div>
+      <nav class="tabs" aria-label="Results">
+        <button class="active" data-tab="preview" type="button">Record preview</button>
+        <button data-tab="summary" type="button">Monthly summary</button>
+        <button data-tab="routes" type="button">Top markets</button>
+        <button data-tab="export" type="button">Export</button>
+      </nav>
+      <section class="result-card" id="preview">
+        <div class="card-heading"><div><h3>Matching records</h3><p>Up to 200 rows. Filters run against the local files.</p></div><span id="previewCount" class="count">—</span></div>
+        <div class="table-wrap" id="previewTable"><div class="empty">Download months and run a query to preview records.</div></div>
+      </section>
+      <section class="result-card hidden" id="summary">
+        <div class="card-heading"><div><h3>Booking-window summary</h3><p>Records, passengers, and mean gross amount by reporting month.</p></div></div>
+        <div id="chart" class="chart"></div>
+        <div class="table-wrap" id="summaryTable"><div class="empty">Run a query to see monthly summaries.</div></div>
+      </section>
+      <section class="result-card hidden" id="routes">
+        <div class="card-heading"><div><h3>Top airport markets</h3><p>Directional Market records, ranked by reported passengers.</p></div></div>
+        <div class="table-wrap" id="routesTable"><div class="empty">Open Market data and run a query.</div></div>
+      </section>
+      <section class="result-card hidden" id="export">
+        <div class="card-heading"><div><h3>Export your selection</h3><p>Every matching row, using your selected fields and filters.</p></div></div>
+        <div class="export-actions">
+          <button id="exportCsv" type="button" disabled>Download CSV <span>↗</span></button>
+          <button id="exportParquet" type="button" disabled>Download Parquet <span>↗</span></button>
+        </div>
+        <p class="help">Large exports are written on disk before your browser downloads them. Keep this window open until the export is ready.</p>
+        <div id="exportStatus" class="download-status" role="status"></div>
+      </section>
+      <footer>Source: U.S. Bureau of Transportation Statistics · DB1C public Ticket and Market files · July 2025–June 2026</footer>
+    </main>
+  </div>
+</body>
+</html>

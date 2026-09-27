@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: db1c-explorer
+    runtime: node
+    plan: 1c-2g
+    buildCommand: npm ci
+    startCommand: npm start
+    autoDeployTrigger: checksPass
+    healthCheckPath: /api/health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: DB1C_DATA_DIR
+        value: /var/data/db1c
+      - key: DB1C_TEMP_DIR
+        value: /var/data/exports
+      - key: APP_USER
+        value: researcher
+      - key: APP_PASSWORD
+        sync: false
+    disk:
+      name: db1c-data
+      mountPath: /var/data
+      sizeGB: 20
